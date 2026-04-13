@@ -5,6 +5,7 @@ Heptafusion is a tool for advanced AI model merging, designed to create powerful
 ## Features
 
 - **Advanced Merging Techniques**: Support for Weighted Average, SLERP, and more.
+- **Multimodal Support**: Optimized for the latest **Gemma 4** model family.
 - **Config-Driven**: Define your fusion recipes in YAML.
 - **Colab Ready**: Optimized scripts for Google Colab environments.
 
