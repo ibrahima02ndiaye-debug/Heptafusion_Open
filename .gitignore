@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+garage_memory.db
+.DS_Store

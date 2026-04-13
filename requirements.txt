@@ -1,0 +1,15 @@
+transformers>=4.48.0
+accelerate>=1.6.0
+bitsandbytes
+sentencepiece
+pydantic==1.10.16
+git+https://github.com/arcee-ai/mergekit.git
+litellm
+duckduckgo-search
+faster-whisper
+piper-tts
+torch
+torchvision
+timm
+pillow
+pyyaml

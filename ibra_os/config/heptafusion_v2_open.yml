@@ -1,0 +1,19 @@
+merge_method: dare_linear
+base_model: Qwen/Qwen2.5-7B-Instruct
+dtype: float16
+parameters:
+  int8_mask: true
+models:
+  - model: Qwen/Qwen2.5-7B-Instruct
+    parameters:
+      weight: 0.40
+      density: 0.9
+  - model: THUDM/glm-4-9b-chat
+    parameters:
+      weight: 0.30
+      density: 0.8
+  - model: Qwen/Qwen2.5-Coder-7B-Instruct
+    parameters:
+      weight: 0.30
+      density: 0.7
+tokenizer_source: base
