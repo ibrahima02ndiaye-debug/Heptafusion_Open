@@ -1,0 +1,34 @@
+class I18nManager:
+    """
+    Handles internationalization for Ibra-OS.
+    """
+    def __init__(self, default_lang="fr"):
+        self.lang = default_lang
+        self.translations = {
+            "fr": {
+                "welcome": "Bienvenue sur Ibra-OS HUD",
+                "agent_status": "Statut des Agents",
+                "appointments": "Rendez-vous en cours",
+                "stock": "Stocks & Pièces",
+                "logs": "Logs Système",
+                "secretary_analyzing": "Analyse de la requête",
+                "confirmation_sent": "Confirmation envoyée à {name} pour le {date}"
+            },
+            "en": {
+                "welcome": "Welcome to Ibra-OS HUD",
+                "agent_status": "Agent Status",
+                "appointments": "Live Appointments",
+                "stock": "Stock & Parts",
+                "logs": "System Logs",
+                "secretary_analyzing": "Analyzing request",
+                "confirmation_sent": "Confirmation sent to {name} for {date}"
+            }
+        }
+
+    def set_language(self, lang):
+        if lang in self.translations:
+            self.lang = lang
+
+    def get(self, key, **kwargs):
+        text = self.translations.get(self.lang, self.translations["fr"]).get(key, key)
+        return text.format(**kwargs)
