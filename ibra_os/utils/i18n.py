@@ -11,6 +11,9 @@ class I18nManager:
                 "appointments": "Rendez-vous en cours",
                 "stock": "Stocks & Pièces",
                 "logs": "Logs Système",
+                "mobile_title": "IBRA SERVICES INC. - Brain IA HUD",
+                "mobile_camera": "📸 CAMERA",
+                "mobile_vocal": "🎤 VOCAL",
                 "secretary_analyzing": "Analyse de la requête",
                 "confirmation_sent": "Confirmation envoyée à {name} pour le {date}"
             },
@@ -20,6 +23,9 @@ class I18nManager:
                 "appointments": "Live Appointments",
                 "stock": "Stock & Parts",
                 "logs": "System Logs",
+                "mobile_title": "IBRA SERVICES INC. - Mobile HUD",
+                "mobile_camera": "📸 CAMERA",
+                "mobile_vocal": "🎤 VOCAL",
                 "secretary_analyzing": "Analyzing request",
                 "confirmation_sent": "Confirmation sent to {name} for {date}"
             }
