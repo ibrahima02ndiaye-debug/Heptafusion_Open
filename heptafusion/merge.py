@@ -46,9 +46,13 @@ def iterative_slerp(tensors, weights, lerp=0.5):
         return tensors[0]
 
     res = tensors[0]
+    total_weight = weights[0]
     for i in range(1, len(tensors)):
-        # Calculate iterative lerp factor if needed, here we use the provided lerp
-        res = slerp(res, tensors[i], lerp)
+        # Calculate a cumulative lerp factor based on weights
+        # For equal weights, this naturally scales (1/2, 1/3, 1/4...)
+        total_weight += weights[i]
+        current_lerp = weights[i] / total_weight
+        res = slerp(res, tensors[i], current_lerp)
     return res
 
 def dare_linear(tensors, weights, density=0.9):
