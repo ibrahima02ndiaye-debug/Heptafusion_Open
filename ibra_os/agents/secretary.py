@@ -13,9 +13,10 @@ class SecretaryAgent(BaseAgent):
     """
     The Secretary agent is the orchestrator of Ibra-OS.
     """
-    def __init__(self, lang="fr"):
+    def __init__(self, lang="fr", mode="hermes"):
         super().__init__(name="Secretary")
         self.i18n = I18nManager(default_lang=lang)
+        self.mode = mode.lower()
         self.specialization = "Orchestration & Communication"
 
         self.intent_map = {
@@ -24,19 +25,44 @@ class SecretaryAgent(BaseAgent):
             "physics": ["moteur", "vibration", "son", "bruit", "engine", "noise"]
         }
 
+    def set_mode(self, mode: str):
+        if mode.lower() in ["hermes", "claw"]:
+            self.mode = mode.lower()
+            print(f"[{self.name}] Mode switched to: {self.mode.upper()}")
+
     def process(self, query: str) -> Dict:
-        print(f"[{self.name}] {self.i18n.get('secretary_analyzing')}: {query}")
+        print(f"[{self.name}] ({self.mode.upper()}) {self.i18n.get('secretary_analyzing')}: {query}")
         query_lower = query.lower()
 
+        if self.mode == "claw":
+            # Advanced Agentic Mode (OpenClaw style): Multi-intent detection
+            detected_intents = []
+            for intent, keywords in self.intent_map.items():
+                if any(keyword in query_lower for keyword in keywords):
+                    detected_intents.append({
+                        "target": intent.capitalize(),
+                        "action": self._get_action_for_intent(intent)
+                    })
+
+            if detected_intents:
+                return {
+                    "mode": "CLAW",
+                    "intents": detected_intents,
+                    "query": query,
+                    "reasoning": "OpenClaw autonomous analysis: multiple intents identified."
+                }
+
+        # Default/HERMES Mode: Single intent keyword matching
         for intent, keywords in self.intent_map.items():
             if any(keyword in query_lower for keyword in keywords):
                 return {
+                    "mode": "HERMES",
                     "target": intent.capitalize(),
                     "action": self._get_action_for_intent(intent),
                     "query": query
                 }
 
-        return {"target": "General", "action": "chat", "query": query}
+        return {"mode": self.mode.upper(), "target": "General", "action": "chat", "query": query}
 
     def _get_action_for_intent(self, intent: str) -> str:
         actions = {

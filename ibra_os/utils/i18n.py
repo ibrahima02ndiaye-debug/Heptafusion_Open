@@ -12,7 +12,9 @@ class I18nManager:
                 "stock": "Stocks & Pièces",
                 "logs": "Logs Système",
                 "secretary_analyzing": "Analyse de la requête",
-                "confirmation_sent": "Confirmation envoyée à {name} pour le {date}"
+                "confirmation_sent": "Confirmation envoyée à {name} pour le {date}",
+                "mode_hermes": "Mode HERMES (Standard)",
+                "mode_claw": "Mode CLAW (Autonome)"
             },
             "en": {
                 "welcome": "Welcome to Ibra-OS HUD",
@@ -21,7 +23,9 @@ class I18nManager:
                 "stock": "Stock & Parts",
                 "logs": "System Logs",
                 "secretary_analyzing": "Analyzing request",
-                "confirmation_sent": "Confirmation sent to {name} for {date}"
+                "confirmation_sent": "Confirmation sent to {name} for {date}",
+                "mode_hermes": "HERMES Mode (Standard)",
+                "mode_claw": "CLAW Mode (Autonomous)"
             }
         }
 
