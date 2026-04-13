@@ -3,31 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ibra-OS HUD - Garage Dashboard</title>
+    <title>Ibra-OS HUD - Mobile Garage Dashboard</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0a0a">
     <style>
         body {
             background-color: #0a0a0a;
             color: #00ff41;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1200px;
         }
         .panel {
             border: 1px solid #00ff41;
             padding: 15px;
             background: rgba(0, 255, 65, 0.05);
             box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+            border-radius: 8px;
         }
         h1, h2 {
             text-transform: uppercase;
             text-align: center;
             border-bottom: 1px solid #00ff41;
             padding-bottom: 10px;
+            font-size: 1.2em;
         }
         .status-online { color: #00ff41; }
         .status-busy { color: #ffcc00; }
@@ -39,75 +48,103 @@
             50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
-        .lang-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+        .header-tools {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 15px;
         }
-        button {
+        .lang-switch button, .mobile-actions button {
             background: #00ff41;
             color: #000;
             border: none;
-            padding: 5px 10px;
+            padding: 10px 15px;
             cursor: pointer;
             font-weight: bold;
+            margin-left: 5px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .mobile-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .action-btn {
+            flex: 1;
+            max-width: 150px;
+        }
+        @media (max-width: 600px) {
+            body { padding: 5px; }
+            h1 { font-size: 1em; }
+            .container { grid-template-columns: 1fr; }
+            .panel { padding: 10px; }
         }
     </style>
 </head>
 <body>
-    <div class="lang-switch">
-        <button onclick="setLang('fr')">FR</button>
-        <button onclick="setLang('en')">EN</button>
+    <div class="header-tools">
+        <div class="mobile-actions">
+            <button class="action-btn" id="btn-camera">📸 CAMERA</button>
+            <button class="action-btn" id="btn-mic">🎤 VOCAL</button>
+        </div>
+        <div class="lang-switch">
+            <button onclick="setLang('fr')">FR</button>
+            <button onclick="setLang('en')">EN</button>
+        </div>
     </div>
+
     <h1 id="title">IBRA SERVICES INC. - Brain IA HUD</h1>
+
     <div style="text-align: center; margin-bottom: 20px;">
         <span id="active-mode" style="background: #00ff41; color: #000; padding: 5px 15px; font-weight: bold; border-radius: 5px;">MODE: HERMES (Standard)</span>
     </div>
+
     <div class="container">
         <div class="panel">
             <h2 id="h-agents">Statut des Agents</h2>
             <ul>
-                <li>Secretary Agent: <span class="status-online pulse">ONLINE (IDLE)</span></li>
-                <li>Vision Agent: <span class="status-online">READY</span></li>
-                <li>Physics Agent: <span class="status-online">ACTIVE</span></li>
-                <li>Memory Agent: <span class="status-online">SYNCED</span></li>
+                <li>Secretary: <span class="status-online pulse">ONLINE</span></li>
+                <li>Vision: <span class="status-online">READY</span></li>
+                <li>Physics: <span class="status-online">ACTIVE</span></li>
             </ul>
         </div>
         <div class="panel">
-            <h2 id="h-appoint">Rendez-vous en cours</h2>
+            <h2 id="h-appoint">Rendez-vous</h2>
             <div id="appointments">
                 <p>Aucun rendez-vous actif.</p>
             </div>
         </div>
         <div class="panel">
-            <h2 id="h-stock">Stocks & Pièces</h2>
+            <h2 id="h-stock">Stocks</h2>
             <ul>
-                <li>Oil Filters: 25</li>
-                <li>Brake Pads (Standard): 12 sets</li>
-                <li>Tires (All-Season): 40</li>
+                <li>Filters: 25</li>
+                <li>Brakes: 12 sets</li>
             </ul>
         </div>
         <div class="panel">
-            <h2 id="h-logs">Logs Système</h2>
-            <div id="logs-container" style="font-size: 0.8em; height: 100px; overflow-y: scroll;">
-                [14:32:01] Secretary: Analyzis started...<br>
-                [14:32:05] Memory: Database query OK.<br>
+            <h2 id="h-logs">Logs</h2>
+            <div id="logs-container" style="font-size: 0.8em; height: 80px; overflow-y: scroll;">
+                [SYSTEM] Mobile Interface Loaded.
             </div>
         </div>
     </div>
+
     <script>
         const translations = {
             fr: {
                 title: "IBRA SERVICES INC. - Brain IA HUD",
                 agents: "Statut des Agents",
-                appoint: "Rendez-vous en cours",
+                appoint: "Rendez-vous",
                 stock: "Stocks & Pièces",
                 logs: "Logs Système"
             },
             en: {
-                title: "IBRA SERVICES INC. - Brain IA HUD",
+                title: "IBRA SERVICES INC. - Mobile HUD",
                 agents: "Agent Status",
-                appoint: "Live Appointments",
+                appoint: "Appointments",
                 stock: "Stock & Parts",
                 logs: "System Logs"
             }
@@ -145,6 +182,32 @@
                 modeSpan.style.background = "#00ff41"; // Green for Hermes
             }
         }, 5000);
+
+        // Mobile Action Listeners
+        document.getElementById('btn-camera').addEventListener('click', () => {
+            const log = document.getElementById('logs-container');
+            log.innerHTML += `[${new Date().toLocaleTimeString()}] Vision: Camera requested...<br>`;
+            log.scrollTop = log.scrollHeight;
+            alert("Caméra activée (Simulation Vision Agent)");
+        });
+
+        document.getElementById('btn-mic').addEventListener('click', () => {
+            const log = document.getElementById('logs-container');
+            log.innerHTML += `[${new Date().toLocaleTimeString()}] Secretary: Listening...<br>`;
+            log.scrollTop = log.scrollHeight;
+            alert("Microphone activé (Simulation Voice Agent)");
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('SW registered!', reg);
+                }).catch(err => {
+                    console.log('SW registration failed!', err);
+                });
+            });
+        }
     </script>
 </body>
 </html>
