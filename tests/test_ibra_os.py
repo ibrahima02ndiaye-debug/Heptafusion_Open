@@ -24,6 +24,32 @@ class TestIbraOS(unittest.TestCase):
         # Test memory dispatch
         res = secretary.process("Quels sont les rendez-vous de demain?")
         self.assertEqual(res['target'], "Memory")
+        self.assertEqual(res['mode'], "HERMES")
+
+    def test_secretary_modes(self):
+        # Default mode (Hermes)
+        secretary = SecretaryAgent()
+        self.assertEqual(secretary.mode, "hermes")
+
+        # Switch to Claw
+        secretary.set_mode("claw")
+        self.assertEqual(secretary.mode, "claw")
+
+        # Test Claw multi-intent detection
+        query = "Regarde mes freins et prends un rdv."
+        res = secretary.process(query)
+        self.assertEqual(res['mode'], "CLAW")
+        self.assertTrue(len(res['intents']) >= 2)
+        targets = [i['target'] for i in res['intents']]
+        self.assertIn("Vision", targets)
+        self.assertIn("Memory", targets)
+
+        # Switch back to Hermes
+        secretary.set_mode("hermes")
+        res = secretary.process(query)
+        self.assertEqual(res['mode'], "HERMES")
+        # Hermes only picks one (the first it finds)
+        self.assertIn(res['target'], ["Vision", "Memory"])
 
     def test_database_schema(self):
         self.assertTrue(os.path.exists(self.test_db))

@@ -60,6 +60,9 @@
         <button onclick="setLang('en')">EN</button>
     </div>
     <h1 id="title">IBRA SERVICES INC. - Brain IA HUD</h1>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <span id="active-mode" style="background: #00ff41; color: #000; padding: 5px 15px; font-weight: bold; border-radius: 5px;">MODE: HERMES (Standard)</span>
+    </div>
     <div class="container">
         <div class="panel">
             <h2 id="h-agents">Statut des Agents</h2>
@@ -110,13 +113,38 @@
             }
         };
 
+        let currentLang = 'fr';
         function setLang(lang) {
+            currentLang = lang;
             document.getElementById('title').innerText = translations[lang].title;
             document.getElementById('h-agents').innerText = translations[lang].agents;
             document.getElementById('h-appoint').innerText = translations[lang].appoint;
             document.getElementById('h-stock').innerText = translations[lang].stock;
             document.getElementById('h-logs').innerText = translations[lang].logs;
+            updateModeDisplay();
         }
+
+        function updateModeDisplay() {
+            const modeSpan = document.getElementById('active-mode');
+            const isClaw = modeSpan.innerText.includes('CLAW');
+            if (currentLang === 'fr') {
+                modeSpan.innerText = isClaw ? "MODE: CLAW (Autonome)" : "MODE: HERMES (Standard)";
+            } else {
+                modeSpan.innerText = isClaw ? "MODE: CLAW (Autonomous)" : "MODE: HERMES (Standard)";
+            }
+        }
+
+        // Simuler un changement de mode pour la démo
+        setInterval(() => {
+            const modeSpan = document.getElementById('active-mode');
+            if (modeSpan.innerText.includes('HERMES')) {
+                modeSpan.innerText = currentLang === 'fr' ? "MODE: CLAW (Autonome)" : "MODE: CLAW (Autonomous)";
+                modeSpan.style.background = "#ff00ff"; // Pink for Claw
+            } else {
+                modeSpan.innerText = currentLang === 'fr' ? "MODE: HERMES (Standard)" : "MODE: HERMES (Standard)";
+                modeSpan.style.background = "#00ff41"; // Green for Hermes
+            }
+        }, 5000);
     </script>
 </body>
 </html>
