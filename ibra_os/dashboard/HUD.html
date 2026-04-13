@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ibra-OS HUD - Garage Dashboard</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            border: 1px solid #00ff41;
+            padding: 15px;
+            background: rgba(0, 255, 65, 0.05);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+        }
+        h1, h2 {
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px solid #00ff41;
+            padding-bottom: 10px;
+        }
+        .status-online { color: #00ff41; }
+        .status-busy { color: #ffcc00; }
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+        @keyframes pulse-animation {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        button {
+            background: #00ff41;
+            color: #000;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="lang-switch">
+        <button onclick="setLang('fr')">FR</button>
+        <button onclick="setLang('en')">EN</button>
+    </div>
+    <h1 id="title">IBRA SERVICES INC. - Brain IA HUD</h1>
+    <div class="container">
+        <div class="panel">
+            <h2 id="h-agents">Statut des Agents</h2>
+            <ul>
+                <li>Secretary Agent: <span class="status-online pulse">ONLINE (IDLE)</span></li>
+                <li>Vision Agent: <span class="status-online">READY</span></li>
+                <li>Physics Agent: <span class="status-online">ACTIVE</span></li>
+                <li>Memory Agent: <span class="status-online">SYNCED</span></li>
+            </ul>
+        </div>
+        <div class="panel">
+            <h2 id="h-appoint">Rendez-vous en cours</h2>
+            <div id="appointments">
+                <p>Aucun rendez-vous actif.</p>
+            </div>
+        </div>
+        <div class="panel">
+            <h2 id="h-stock">Stocks & Pièces</h2>
+            <ul>
+                <li>Oil Filters: 25</li>
+                <li>Brake Pads (Standard): 12 sets</li>
+                <li>Tires (All-Season): 40</li>
+            </ul>
+        </div>
+        <div class="panel">
+            <h2 id="h-logs">Logs Système</h2>
+            <div id="logs-container" style="font-size: 0.8em; height: 100px; overflow-y: scroll;">
+                [14:32:01] Secretary: Analyzis started...<br>
+                [14:32:05] Memory: Database query OK.<br>
+            </div>
+        </div>
+    </div>
+    <script>
+        const translations = {
+            fr: {
+                title: "IBRA SERVICES INC. - Brain IA HUD",
+                agents: "Statut des Agents",
+                appoint: "Rendez-vous en cours",
+                stock: "Stocks & Pièces",
+                logs: "Logs Système"
+            },
+            en: {
+                title: "IBRA SERVICES INC. - Brain IA HUD",
+                agents: "Agent Status",
+                appoint: "Live Appointments",
+                stock: "Stock & Parts",
+                logs: "System Logs"
+            }
+        };
+
+        function setLang(lang) {
+            document.getElementById('title').innerText = translations[lang].title;
+            document.getElementById('h-agents').innerText = translations[lang].agents;
+            document.getElementById('h-appoint').innerText = translations[lang].appoint;
+            document.getElementById('h-stock').innerText = translations[lang].stock;
+            document.getElementById('h-logs').innerText = translations[lang].logs;
+        }
+    </script>
+</body>
+</html>
