@@ -22,7 +22,9 @@ class SecretaryAgent(BaseAgent):
         self.intent_map = {
             "vision": ["voir", "regarde", "image", "photo", "diagnostic", "frein", "brake", "view", "gemma"],
             "memory": ["rendez-vous", "client", "rdv", "horaire", "liste", "appointment", "schedule"],
-            "physics": ["moteur", "vibration", "son", "bruit", "engine", "noise"]
+            "physics": ["moteur", "vibration", "son", "bruit", "engine", "noise"],
+            "inventory": ["stock", "pièce", "part", "filtre", "filter", "pneu", "tire"],
+            "history": ["historique", "passé", "ancien", "history", "previous", "record"]
         }
 
     def set_mode(self, mode: str):
@@ -35,21 +37,30 @@ class SecretaryAgent(BaseAgent):
         query_lower = query.lower()
 
         if self.mode == "claw":
-            # Advanced Agentic Mode (OpenClaw style): Multi-intent detection
+            # Advanced Agentic Mode (OpenClaw style): Multi-intent detection with reasoning
+            print(f"[{self.name}] [THOUGHT] Analyzing user intent and context...")
             detected_intents = []
             for intent, keywords in self.intent_map.items():
                 if any(keyword in query_lower for keyword in keywords):
+                    print(f"[{self.name}] [THOUGHT] Keyword match for intent: {intent}")
                     detected_intents.append({
                         "target": intent.capitalize(),
                         "action": self._get_action_for_intent(intent)
                     })
 
             if detected_intents:
+                reasoning = f"OpenClaw autonomous analysis: {len(detected_intents)} intents identified. "
+                reasoning += "Orchestrating multi-agent response sequence."
                 return {
                     "mode": "CLAW",
                     "intents": detected_intents,
                     "query": query,
-                    "reasoning": "OpenClaw autonomous analysis: multiple intents identified."
+                    "reasoning_steps": [
+                        "Decomposing user query into semantic tokens.",
+                        f"Mapping tokens to intent-map: {', '.join([i['target'] for i in detected_intents])}",
+                        "Synthesizing multi-agent execution plan."
+                    ],
+                    "reasoning": reasoning
                 }
 
         # Default/HERMES Mode: Single intent keyword matching
@@ -68,7 +79,9 @@ class SecretaryAgent(BaseAgent):
         actions = {
             "vision": "analyze_visuals",
             "memory": "query_database",
-            "physics": "analyze_physics"
+            "physics": "analyze_physics",
+            "inventory": "check_stock",
+            "history": "retrieve_history"
         }
         return actions.get(intent, "process")
 

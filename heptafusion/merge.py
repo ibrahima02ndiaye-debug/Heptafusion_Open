@@ -38,6 +38,19 @@ def slerp(t1, t2, lerp, dot_threshold=0.9995):
 
     return torch.cos(theta) * t1 + torch.sin(theta) * t3
 
+def iterative_slerp(tensors, weights, lerp=0.5):
+    """
+    Iterative Spherical Linear Interpolation for more than two models.
+    """
+    if len(tensors) < 2:
+        return tensors[0]
+
+    res = tensors[0]
+    for i in range(1, len(tensors)):
+        # Calculate iterative lerp factor if needed, here we use the provided lerp
+        res = slerp(res, tensors[i], lerp)
+    return res
+
 def dare_linear(tensors, weights, density=0.9):
     """
     DARE (Drop And REscale) Linear merging.
@@ -117,8 +130,11 @@ def merge_models(base_model_path, model_paths, method="weighted_average", weight
 
         if method == "weighted_average":
             new_state_dict[key] = weighted_average(tensors, weights)
-        elif method == "slerp" and len(tensors) == 2:
-            new_state_dict[key] = slerp(tensors[0], tensors[1], lerp)
+        elif method == "slerp":
+            if len(tensors) == 2:
+                new_state_dict[key] = slerp(tensors[0], tensors[1], lerp)
+            else:
+                new_state_dict[key] = iterative_slerp(tensors, weights, lerp)
         elif method == "dare_linear":
             new_state_dict[key] = dare_linear(tensors, weights)
         else:
