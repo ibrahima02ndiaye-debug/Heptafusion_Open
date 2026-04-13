@@ -1,3 +1,4 @@
+import torch
 try:
     from faster_whisper import WhisperModel
 except ImportError:
@@ -12,8 +13,13 @@ class VocalAgent:
         if WhisperModel is None:
             print("faster-whisper not installed. Skipping load.")
             return
-        print(f"Loading Whisper model ({self.stt_model_size})...")
-        self.stt_model = WhisperModel(self.stt_model_size, device="cpu", compute_type="int8")
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"Loading Whisper model ({self.stt_model_size}) on {device}...")
+        self.stt_model = WhisperModel(
+            self.stt_model_size,
+            device=device,
+            compute_type="float16" if device == "cuda" else "int8"
+        )
 
     def transcribe(self, audio_file):
         if self.stt_model is None:

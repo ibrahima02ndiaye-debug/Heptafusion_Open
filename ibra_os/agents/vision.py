@@ -3,10 +3,11 @@ from PIL import Image
 import requests
 
 try:
-    from transformers import AutoProcessor, AutoModelForVision2Seq
+    from transformers import AutoProcessor, AutoModelForVision2Seq, BitsAndBytesConfig
 except ImportError:
     AutoProcessor = None
     AutoModelForVision2Seq = None
+    BitsAndBytesConfig = None
 
 class VisionAgent:
     def __init__(self, model_id="Qwen/Qwen2-VL-7B-Instruct"):
@@ -21,9 +22,17 @@ class VisionAgent:
             return
         print(f"Loading {self.model_id}...")
         self.processor = AutoProcessor.from_pretrained(self.model_id)
-        # Using a simplified load for demonstration; in production, use quantization_config
+
+        quantization_config = None
+        if self.device == "cuda" and BitsAndBytesConfig is not None:
+            quantization_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_compute_dtype=torch.float16
+            )
+
         self.model = AutoModelForVision2Seq.from_pretrained(
             self.model_id,
+            quantization_config=quantization_config,
             torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
             device_map="auto" if self.device == "cuda" else None
         )

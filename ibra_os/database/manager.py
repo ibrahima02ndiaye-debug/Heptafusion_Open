@@ -12,7 +12,7 @@ def init_db(db_path):
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS clients (
             id INTEGER PRIMARY KEY,
-            nom TEXT,
+            nom TEXT UNIQUE,
             vehicule TEXT,
             preferences TEXT,
             historique_notes TEXT
