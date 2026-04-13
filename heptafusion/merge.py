@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from transformers import AutoModelForCausalLM
+from transformers import AutoModel, AutoModelForCausalLM
 from tqdm import tqdm
 import os
 
@@ -68,22 +68,42 @@ def merge_models(base_model_path, model_paths, method="weighted_average", weight
     Merging is performed in FP16 to ensure mathematical correctness.
     """
     print(f"Loading base model: {base_model_path}")
-    # Load in float16 for merging precision
-    base_model = AutoModelForCausalLM.from_pretrained(
-        base_model_path,
-        torch_dtype=torch.float16,
-        device_map="cpu" # Merging usually done on CPU to avoid VRAM issues if multiple models are loaded
-    )
+    # Use AutoModel for maximum flexibility (e.g., Multimodal Gemma 4)
+    try:
+        base_model = AutoModel.from_pretrained(
+            base_model_path,
+            torch_dtype=torch.float16,
+            device_map="cpu",
+            trust_remote_code=True
+        )
+    except Exception:
+        # Fallback to CausalLM if AutoModel fails for specific architectures
+        base_model = AutoModelForCausalLM.from_pretrained(
+            base_model_path,
+            torch_dtype=torch.float16,
+            device_map="cpu",
+            trust_remote_code=True
+        )
+
     base_state_dict = base_model.state_dict()
 
     model_state_dicts = []
     for path in model_paths:
         print(f"Loading model to merge: {path}")
-        model = AutoModelForCausalLM.from_pretrained(
-            path,
-            torch_dtype=torch.float16,
-            device_map="cpu"
-        )
+        try:
+            model = AutoModel.from_pretrained(
+                path,
+                torch_dtype=torch.float16,
+                device_map="cpu",
+                trust_remote_code=True
+            )
+        except Exception:
+            model = AutoModelForCausalLM.from_pretrained(
+                path,
+                torch_dtype=torch.float16,
+                device_map="cpu",
+                trust_remote_code=True
+            )
         model_state_dicts.append(model.state_dict())
 
     new_state_dict = {}

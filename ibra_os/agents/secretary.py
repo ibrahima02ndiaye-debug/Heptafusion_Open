@@ -19,7 +19,7 @@ class SecretaryAgent(BaseAgent):
         self.specialization = "Orchestration & Communication"
 
         self.intent_map = {
-            "vision": ["voir", "regarde", "image", "photo", "diagnostic", "frein", "brake", "view"],
+            "vision": ["voir", "regarde", "image", "photo", "diagnostic", "frein", "brake", "view", "gemma"],
             "memory": ["rendez-vous", "client", "rdv", "horaire", "liste", "appointment", "schedule"],
             "physics": ["moteur", "vibration", "son", "bruit", "engine", "noise"]
         }
